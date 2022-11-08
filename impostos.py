@@ -22,45 +22,35 @@ class Conf(object):
 		for i in orcamento.obter_itens():
 			return i.valor > 100
 
-	def checa_valor(self, orcamento,nome,condicao,min,max):
+	def calcula(self, orcamento,condicao,min,max):
 		if condicao:
-			self.calculo = orcamento.valor * (max/100)
+			self.calculo = (orcamento.valor * (max/100))
 		else:
-			self.calculo = orcamento.valor * (min/100)
+			self.calculo = (orcamento.valor * (min/100))
 		return self.calculo
 
 	def retorna_valor(self, orcamento,nome,condicao,min,max):
-		return self.jsonify(nome,self.checa_valor(self,orcamento,nome,condicao,min,max), orcamento)
-
-	@abstractmethod
-	def calcula(orcamento):
-		pass
+		return self.jsonify(nome,Conf.calcula(self,orcamento,condicao,min,max), orcamento)
 
 class ISS(Conf):
 	def calcula(self,orcamento):
 		return self.jsonify("ISS",orcamento.valor * 0.1, orcamento)
-
 class ICMS(Conf):
 	def calcula(self,orcamento):
 		return self.jsonify("ICMS",orcamento.valor * 0.06, orcamento)
 
 class ICPP(Conf):
-	def pegaValor(self, orcamento):
-		return self.checa_valor(self, orcamento, "ICPP", self.eh_mais_q_500(orcamento), 7, 5)
+	def get(self, orcamento):
+		return Conf.calcula(self, orcamento, self.eh_mais_q_500(orcamento), 7, 5)
 	def calcula(self, orcamento):
 		return self.retorna_valor(self, orcamento, "ICPP", self.eh_mais_q_500(orcamento), 7, 5)
 
 class IKCV(Conf): 
-	def pegaValor(self, orcamento):
-		return self.checa_valor(self, orcamento,"IKCV",self.eh_mais_q_500(orcamento) and self.tem_item_valendo_mais_q_100(orcamento) , 10, 6)
+	def get(self, orcamento):
+		return Conf.calcula(self, orcamento,self.eh_mais_q_500(orcamento) and self.tem_item_valendo_mais_q_100(orcamento) , 10, 6)
 	def calcula(self, orcamento):
 		return self.retorna_valor(self, orcamento,"IKCV",self.eh_mais_q_500(orcamento) and self.tem_item_valendo_mais_q_100(orcamento) , 10, 6)
 
-class ISS_Com_ICPP(Conf):
-    def soma(self, orcamento):
-        return ICPP.pegaValor(self,orcamento) + IKCV.pegaValor(self,orcamento)
-    def calcula(self, orcamento):
-        return self.jsonify("ISS+ICPP",ISS_Com_ICPP.soma(self,orcamento), orcamento)
 
 
 def get():
@@ -69,5 +59,4 @@ def get():
 		ICMS,
 		ICPP,
 		IKCV,
-		ISS_Com_ICPP
 	]
