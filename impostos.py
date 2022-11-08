@@ -1,24 +1,73 @@
 from calcula_descontos import Calcula_descontos
+from abc import ABCMeta, abstractmethod
 
-class ISS(object):
+class Conf(object):
+	__metaclass__ = ABCMeta
+
+	def __init__(self):
+		self.calculo = 0
+  
+	def jsonify(name, imposto, orcamento):
+		return {
+			"nome": name,
+			"valor": imposto + orcamento.valor - Calcula_descontos().calcula(orcamento),
+			"imposto": round(imposto,2),
+			"desconto": round(Calcula_descontos().calcula(orcamento),2),
+		}
+
+	def eh_mais_q_500(orcamento):
+		return orcamento.valor > 500
+
+	def tem_item_valendo_mais_q_100(orcamento):
+		for i in orcamento.obter_itens():
+			return i.valor > 100
+
+	def checa_valor(self, orcamento,nome,condicao,min,max):
+		if condicao:
+			self.calculo = orcamento.valor * (max/100)
+		else:
+			self.calculo = orcamento.valor * (min/100)
+		return self.calculo
+
+	def retorna_valor(self, orcamento,nome,condicao,min,max):
+		return self.jsonify(nome,self.checa_valor(self,orcamento,nome,condicao,min,max), orcamento)
+
+	@abstractmethod
 	def calcula(orcamento):
-		return jsonify("ISS",orcamento.valor * 0.1, orcamento)
+		pass
 
-class ICMS(object):
-	def calcula(orcamento):
-		return jsonify("ICMS",orcamento.valor * 0.06, orcamento)
+class ISS(Conf):
+	def calcula(self,orcamento):
+		return self.jsonify("ISS",orcamento.valor * 0.1, orcamento)
 
+class ICMS(Conf):
+	def calcula(self,orcamento):
+		return self.jsonify("ICMS",orcamento.valor * 0.06, orcamento)
 
-def jsonify(name, imposto, orcamento):
-	return {
-		"name": name,
-		"value": imposto + orcamento.valor - Calcula_descontos().calcula(orcamento),
-		"imposto": round(imposto,2),
-		"desconto": round(Calcula_descontos().calcula(orcamento),2),
-	}
+class ICPP(Conf):
+	def pegaValor(self, orcamento):
+		return self.checa_valor(self, orcamento, "ICPP", self.eh_mais_q_500(orcamento), 7, 5)
+	def calcula(self, orcamento):
+		return self.retorna_valor(self, orcamento, "ICPP", self.eh_mais_q_500(orcamento), 7, 5)
+
+class IKCV(Conf): 
+	def pegaValor(self, orcamento):
+		return self.checa_valor(self, orcamento,"IKCV",self.eh_mais_q_500(orcamento) and self.tem_item_valendo_mais_q_100(orcamento) , 10, 6)
+	def calcula(self, orcamento):
+		return self.retorna_valor(self, orcamento,"IKCV",self.eh_mais_q_500(orcamento) and self.tem_item_valendo_mais_q_100(orcamento) , 10, 6)
+
+class ISS_Com_ICPP(Conf):
+    def soma(self, orcamento):
+        return ICPP.pegaValor(self,orcamento) + IKCV.pegaValor(self,orcamento)
+    def calcula(self, orcamento):
+        return self.jsonify("ISS+ICPP",ISS_Com_ICPP.soma(self,orcamento), orcamento)
+
 
 def get():
 	return [
 		ISS,
-		ICMS
+		ICMS,
+		ICPP,
+		IKCV,
+		ISS_Com_ICPP
 	]
