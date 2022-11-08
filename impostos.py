@@ -1,7 +1,11 @@
 from calcula_descontos import Calcula_descontos
+from abc import ABCMeta, abstractmethod
+
 class Conf(object):
+	__metaclass__ = ABCMeta
+
 	def __init__(self):
-		self.calculo = 0;
+		self.calculo = 0
   
 	def jsonify(name, imposto, orcamento):
 		return {
@@ -18,28 +22,33 @@ class Conf(object):
 		for i in orcamento.obter_itens():
 			return i.valor > 100
 
-	def checa_valor(orcamento,nome,condicao, val1,val2):
+	def checa_valor(self, orcamento,nome,condicao,min,max):
 		if condicao:
-			Conf.calculo = orcamento.valor * val1
+			self.calculo = orcamento.valor * (max/100)
 		else:
-			Conf.calculo = orcamento.valor * val2
-		return Conf.jsonify(nome,Conf.calculo, orcamento)
+			self.calculo = orcamento.valor * (min/100)
+		return self.jsonify(nome,self.calculo, orcamento)
 
-class ISS(object):
+	@abstractmethod
 	def calcula(orcamento):
-		return Conf.jsonify("ISS",orcamento.valor * 0.1, orcamento)
+		pass
 
-class ICMS(object):
-	def calcula(orcamento):
-		return Conf.jsonify("ICMS",orcamento.valor * 0.06, orcamento)
+class ISS(Conf):
+	def calcula(self,orcamento):
+		return self.jsonify("ISS",orcamento.valor * 0.1, orcamento)
 
-class ICPP(object):
-	def calcula(orcamento):
-		return Conf.checa_valor(orcamento, "ICPP", Conf.eh_mais_q_500(orcamento), 0.07, 0.05)
+class ICMS(Conf):
+	def calcula(self,orcamento):
+		return self.jsonify("ICMS",orcamento.valor * 0.06, orcamento)
 
-class IKCV(object):
-	def calcula(orcamento):
-		return Conf.checa_valor(orcamento, "ICPP", Conf.eh_mais_q_500(orcamento) and Conf.tem_item_valendo_mais_q_100(orcamento), 0.07, 0.05)
+class ICPP(Conf):
+	def calcula(self, orcamento):
+		return self.checa_valor(self, orcamento, "ICPP", self.eh_mais_q_500(orcamento), 7, 5)
+
+class IKCV(Conf): 
+    
+	def calcula(self, orcamento):
+		return self.checa_valor(self, orcamento,"IKCV",self.eh_mais_q_500(orcamento) and self.tem_item_valendo_mais_q_100(orcamento) , 10, 6)
 
 
 def get():
