@@ -13,10 +13,9 @@ class Calcula_impostos(object):
 if __name__ == "__main__":
 	from orcamento import Orcamento, Item
 	import impostos as ipt
-	print(
-			[
-				Calcula_impostos().calcula(Orcamento(), i)
-				 for i in ipt.get()
-			]
-		)
+	for j in [
+			Calcula_impostos().calcula(Orcamento(), i)
+			for i in ipt.get()
+		]:
+		print(j)
 		
