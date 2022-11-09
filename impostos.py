@@ -1,16 +1,26 @@
 from calcula_descontos import Calcula_descontos
 from abc import ABCMeta, abstractmethod
 
-class Conf(object):
+
+class Imposto(object):
 	__metaclass__ = ABCMeta
 
+	@abstractmethod
+	def calcula():
+		pass
+	
+	@abstractmethod
+	def jsonify():
+		pass
+
+class Conf(Imposto):
 	def __init__(self):
 		self.calculo = 0
   
 	def jsonify(name, imposto, orcamento):
 		return {
 			"nome": name,
-			"valor": imposto + orcamento.valor - Calcula_descontos().calcula(orcamento),
+			"resultado": imposto + orcamento.valor - Calcula_descontos().calcula(orcamento),
 			"imposto": round(imposto,2),
 			"desconto": round(Calcula_descontos().calcula(orcamento),2),
 		}
@@ -32,7 +42,14 @@ class Conf(object):
 	def retorna_valor(self, orcamento,nome,condicao,min,max):
 		return self.jsonify(nome,Conf.calcula(self,orcamento,condicao,min,max), orcamento)
 
+def IPVX(func):
+	def inner(self, orcamento):
+		print(Conf.jsonify("IPVX",func(self, orcamento) + 50, orcamento))
+	return inner
 class ISS(Conf):
+	@IPVX
+	def get(self, orcamento):
+		return orcamento.valor * 0.1
 	def calcula(self,orcamento):
 		return self.jsonify("ISS",orcamento.valor * 0.1, orcamento)
 class ICMS(Conf):
@@ -52,11 +69,11 @@ class IKCV(Conf):
 		return self.retorna_valor(self, orcamento,"IKCV",self.eh_mais_q_500(orcamento) and self.tem_item_valendo_mais_q_100(orcamento) , 10, 6)
 
 
-
 def get():
 	return [
 		ISS,
 		ICMS,
 		ICPP,
 		IKCV,
+		IPVX,
 	]
