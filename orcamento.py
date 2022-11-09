@@ -6,24 +6,58 @@ class Desconto_extra(object):
     @abstractmethod
     def aplica_desconto_extra(self,orcamento):
         pass
-            
+    
+    @abstractmethod
+    def aprova(self):
+        pass
+    @abstractmethod
+    def reprova(self):
+        pass
+    @abstractmethod
+    def finaliza(self):
+        pass
             
 class Em_aprovacao(Desconto_extra):
     def aplica_desconto_extra(self, orcamento):
             orcamento.adiciona_desconto_extra(orcamento.valor * 0.02)
+    def aprova(self):
+        pass
+    def reprova(self):
+        pass
+    def finaliza(self):
+        raise Exception("Orçamentos finalizados não receberam desconto extra")
+            
 
 class Aprovado(Desconto_extra):
     def aplica_desconto_extra(self, orcamento):
             orcamento.adiciona_desconto_extra(orcamento.valor * 0.05)
+    def aprova(self):
+        raise Exception("Orçamentos finalizados não receberam desconto extra")
+    def reprova(self):
+        raise Exception("Orçamentos finalizados não receberam desconto extra")
+    def finaliza(self):
+        pass
 
 class Reprovado(Desconto_extra):
     def aplica_desconto_extra(self,orcamento):
-            raise Exception("Orçamentos reprovados não receberam desconto extra")
-
+        raise Exception("Orçamentos reprovados não receberam desconto extra")
+    def aprova(self):
+        raise Exception("Orçamentos finalizados não receberam desconto extra")
+    def reprova(self):
+        raise Exception("Orçamentos finalizados não receberam desconto extra")
+    def finaliza(self):
+        pass
+    
 class Finalizado(Desconto_extra):
     def aplica_desconto_extra(self,orcamento):
-            raise Exception("Orçamentos finalizados não receberam desconto extra")
-
+        raise Exception("Orçamentos finalizados não receberam desconto extra")
+    def aprova(self):
+        raise Exception("Orçamentos finalizados não receberam desconto extra")
+    def reprova(self):
+        raise Exception("Orçamentos finalizados não receberam desconto extra")
+    def finaliza(self):
+        raise Exception("Orçamentos finalizados não receberam desconto extra")
+    
 class Orcamento(object):
 
 
