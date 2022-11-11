@@ -25,16 +25,16 @@ class Em_aprovacao(Desconto_extra):
     def reprova(self):
         pass
     def finaliza(self):
-        raise Exception("Orçamentos finalizados não receberam desconto extra")
+        raise Exception("Orçamentos em aprovação não podem ser finalizados")
             
 
 class Aprovado(Desconto_extra):
     def aplica_desconto_extra(self, orcamento):
             orcamento.adiciona_desconto_extra(orcamento.valor * 0.05)
     def aprova(self):
-        raise Exception("Orçamentos finalizados não receberam desconto extra")
+        raise Exception("Orçamento já aprovado")
     def reprova(self):
-        raise Exception("Orçamentos finalizados não receberam desconto extra")
+        raise Exception("Orçamentos aprovados não podem ser reprovados")
     def finaliza(self):
         pass
 
@@ -42,9 +42,9 @@ class Reprovado(Desconto_extra):
     def aplica_desconto_extra(self,orcamento):
         raise Exception("Orçamentos reprovados não receberam desconto extra")
     def aprova(self):
-        raise Exception("Orçamentos finalizados não receberam desconto extra")
+        raise Exception("Orçamentos reprovados não podem ser aprovados")
     def reprova(self):
-        raise Exception("Orçamentos finalizados não receberam desconto extra")
+        raise Exception("Orçamento já reprovado")
     def finaliza(self):
         pass
     
@@ -52,9 +52,9 @@ class Finalizado(Desconto_extra):
     def aplica_desconto_extra(self,orcamento):
         raise Exception("Orçamentos finalizados não receberam desconto extra")
     def aprova(self):
-        raise Exception("Orçamentos finalizados não receberam desconto extra")
+        raise Exception("Orçamentos finalizados não podem ser aprovados")
     def reprova(self):
-        raise Exception("Orçamentos finalizados não receberam desconto extra")
+        raise Exception("Orçamentos finalizados não podem ser aprovados")
     def finaliza(self):
         raise Exception("Orçamentos finalizados não receberam desconto extra")
     
