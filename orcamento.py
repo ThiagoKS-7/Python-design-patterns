@@ -19,38 +19,43 @@ class Desconto_extra(object):
             
 class Em_aprovacao(Desconto_extra):
     def aplica_desconto_extra(self, orcamento):
-            orcamento.adiciona_desconto_extra(orcamento.valor * 0.02)
-    def aprova(self):
-        pass
+        self.aprova(orcamento)
+    def aprova(self,orcamento):
+        orcamento.estado_atual = Aprovado()
+        orcamento.estado_atual.aplica_desconto_extra(orcamento)
     def reprova(self):
-        pass
+        orcamento.estado_atual = Reprovado()
     def finaliza(self):
         raise Exception("Orçamentos em aprovação não podem ser finalizados")
             
 
 class Aprovado(Desconto_extra):
     def aplica_desconto_extra(self, orcamento):
-            orcamento.adiciona_desconto_extra(orcamento.valor * 0.05)
+        orcamento.adiciona_desconto_extra(orcamento.valor * 0.05)
+        self.finaliza()
     def aprova(self):
         raise Exception("Orçamento já aprovado")
     def reprova(self):
         raise Exception("Orçamentos aprovados não podem ser reprovados")
     def finaliza(self):
-        pass
+        orcamento.estado_atual = Finalizado()
+        print(orcamento.estado_atual.get(orcamento))
 
 class Reprovado(Desconto_extra):
     def aplica_desconto_extra(self,orcamento):
-        raise Exception("Orçamentos reprovados não receberam desconto extra")
+        raise Exception("Orçamentos reprovados não recebem desconto extra")
     def aprova(self):
         raise Exception("Orçamentos reprovados não podem ser aprovados")
     def reprova(self):
         raise Exception("Orçamento já reprovado")
     def finaliza(self):
-        pass
+        orcamento.estado_atual = Finalizado()
     
 class Finalizado(Desconto_extra):
     def aplica_desconto_extra(self,orcamento):
         raise Exception("Orçamentos finalizados não receberam desconto extra")
+    def get(self,orcamento):
+        return  {"valor":orcamento.valor, "estado":orcamento.estado_atual}
     def aprova(self):
         raise Exception("Orçamentos finalizados não podem ser aprovados")
     def reprova(self):
@@ -122,6 +127,4 @@ if __name__ == '__main__':
 			Item('Item C', 800.0)
 			]
 		)
-    orcamento.estado_atual = Aprovado()
-    orcamento.aplica_desconto_extra()
-    print(orcamento.valor)
+    orcamento.aplica_desconto_extra()    
