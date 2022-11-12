@@ -1,6 +1,25 @@
 import types
 from datetime import date
 
+'''
+Template method: criar esqueleto que muda em pequenos detalhes
+Factory method: Bom pra usar junto com o template, fazendo uma única classe mãe chamar o mesmo método de várias classes 
+Chain of responsibility: Parecido com factories, mas a principal vantagem é que dá pra mexer na ordem de execução
+Decorator: decorar métodos ao invés de chamar muitos ifs
+State: gerencia status
+Observers: gerencia chamadas de vários métodos em um processo em comum (junta bem com duck typing)
+Builder: Bom pra simplificar complexidade de um código, "aumentando o nível" da implementanção, (quase como uma factory, com a
+principal diferença que a factory  só chama classes duck typed's e o builder cria properties em comum pra elas)
+
+
+#TODO: implementar um exemplo de Chain of Responsibility a parte -> https://refactoring.guru/design-patterns/chain-of-responsibility/python/example 
+'''
+
+'''
+Patterns do arquivo: 
+Chain of responsibility - Calcula_impostos equivale ao client code;
+'''
+
 class Calcula_impostos(object):
 	def calcula(self,orcamento, imposto):
 		from impostos import Conf, ISS

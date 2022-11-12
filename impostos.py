@@ -1,10 +1,15 @@
 from calcula_descontos import Calcula_descontos
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 
 
-class Imposto(object):
-	__metaclass__ = ABCMeta
+'''
+Patterns do arquivo: 
+Chain of responsibility - Cada imposto é um handler; Imposto(ABC) é a interface
+Decorators (IPVX);
+Template Method - Todos usam a Config de template;
+'''
 
+class Imposto(ABC):
 	@abstractmethod
 	def calcula():
 		pass
@@ -77,3 +82,4 @@ def get():
 		IKCV,
 		IPVX,
 	]
+ 

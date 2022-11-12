@@ -1,5 +1,12 @@
 from abc import ABCMeta, abstractmethod
 
+
+'''
+Patterns do arquivo: 
+State method - Estados do orçamento;
+Template method - Heranças da interface Desconto_Extra
+'''
+
 class Desconto_extra(object):
     __metaclass__ = ABCMeta
     
@@ -64,7 +71,6 @@ class Finalizado(Desconto_extra):
         raise Exception("Orçamentos finalizados não receberam desconto extra")
     
 class Orcamento(object):
-
 
     def __init__(self,estado_atual=Em_aprovacao()):
         self.__itens = []

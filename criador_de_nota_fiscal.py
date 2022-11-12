@@ -2,6 +2,13 @@ from datetime import date
 import types
 from abc import ABCMeta, abstractmethod
 
+'''
+Patterns do arquivo: 
+Builder - Criador de NF;
+Template method - NF's;
+'''
+
+
 class Nota_fiscal_Um(object):
     __metaclass__ = ABCMeta
     
