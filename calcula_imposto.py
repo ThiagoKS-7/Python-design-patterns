@@ -31,21 +31,19 @@ if __name__ == "__main__":
 		if not isinstance(j, types.FunctionType):
 			print(j)
 			total += j['resultado']
-	nf1 = (
-     Criador_de_nota_fiscal()
+	(
+    Criador_de_nota_fiscal()
 	.com_razao_social("FHSA Limitada")
-	.com_cnpj("012345678901234")
+	.com_cnpj("92347526000160")
 	.com_itens(itens)
 	.com_total(total)
-	) 
-	print(nf1)	
-	nf2 = (
+	).__str__()
+	(
 		Criador_de_nota_fiscal()
 	.com_razao_social("FHSA Limitada")
-	.com_cnpj("012345678901234")
+	.com_cnpj("92347526000160")
  	.com_itens(itens)
 	.com_total(total)
 	.com__template(2)
-	) 
-	print(nf2)		
+	).__str__() 		
 
