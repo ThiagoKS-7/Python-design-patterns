@@ -1,4 +1,5 @@
 from datetime import date
+import types
 from abc import ABCMeta, abstractmethod
 
 class Nota_fiscal_Um(object):
@@ -14,7 +15,7 @@ class Nota_fiscal_Um(object):
         self.__total = total
 
     def __str__(self):
-        return f"   NOTA FISCAL 1 - 2022      \n"
+        return f"               NOTA FISCAL 1 - 2022             \n\n"
 
 class Nota_fiscal_Dois(object):
     __metaclass__ = ABCMeta
@@ -29,9 +30,22 @@ class Nota_fiscal_Dois(object):
         self.__total = total
 
     def __str__(self):
-        return f"    NOTA FISCAL 2 - 2022      \n"
+        return f"               NOTA FISCAL 2 - 2022             \n\n"
         
 
+def getItens(itens):
+    for i in itens:
+        if not isinstance(i, types.FunctionType):
+            print("* " + i['nome'] + " - R$ "  + str(i['resultado']))
+            
+def formatDate(value):
+    date = str(value).split("-")
+    return f"{date[2]}/{date[1]}/{date[0]}"
+
+def formatCnpj(value):
+    date = str(value)
+    print(date)
+    return f"{date[0]}{date[1]}.{date[2]}{date[3]}{date[4]}.{date[5]}{date[6]}{date[7]}/{date[8]}{date[9]}{date[10]}-{date[11]}{date[12]}"
 
 class Criador_de_nota_fiscal(object):
     def __init__(self):
@@ -75,23 +89,16 @@ class Criador_de_nota_fiscal(object):
             return Nota_fiscal_Um(self.__razao_social,self.__cnpj, self.__total,self.__data_de_emissao, self.__detalhes).__str__()
         return Nota_fiscal_Dois(self.__razao_social,self.__cnpj, self.__total,self.__data_de_emissao, self.__detalhes).__str__()
     
-    def mostraItens(self):
-        teste = ''
-        for i in self.__itens:
-           teste = i['nome'] + teste
-        return teste
-            
     def __str__(self):
-        return  (
-            f"=================================\n"+
-            self.checaTemplateNf() +
-            f"Razão Social: {self.__razao_social}\n"+
-            f"CNPJ: {self.__cnpj}\n"+
-            f"Detalhes: {self.__detalhes if self.__detalhes != '' else '-'}\n"+
-            f"    ITENS      \n" 
-            f"Total: R$ {self.__total}\n"+
-            f"Emissão: {self.__data_de_emissao}\n"
-            f"=================================\n")
+        print(f"======================================================\n"+
+        self.checaTemplateNf() +
+        f"Razão Social: {self.__razao_social}      CNPJ: {formatCnpj(self.__cnpj)}\n\n\n"+
+        f"Detalhes: {self.__detalhes if self.__detalhes != '' else '-'}\n\n" +
+        f"                      ITENS:                      \n")
+        getItens(self.__itens)
+        print(f"\n\n    Total: R$ {self.__total}\n"+
+        f"\n{formatDate(self.__data_de_emissao)}\n" +
+        f"======================================================\n")
     
     def constroi(self):
         if self.__razao_social == None:
