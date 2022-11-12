@@ -22,6 +22,8 @@ if __name__ == "__main__":
 	from orcamento import Orcamento, Item
 	import impostos as ipt
 	from criador_de_nota_fiscal import Criador_de_nota_fiscal
+	from observador import gerenciaNf
+ 
 	total=0
 	itens = [
 			Calcula_impostos().calcula(Orcamento(), i)
@@ -37,6 +39,8 @@ if __name__ == "__main__":
 	.com_cnpj("92347526000160")
 	.com_itens(itens)
 	.com_total(total)
+	.que_notifica(['Admin', 'O5 Council', 'Financeiro', 'Setor 202', 'Teste', 'Zézinho'])
+ 	.com_observers([gerenciaNf])
 	).__str__()
 	(
 		Criador_de_nota_fiscal()
@@ -44,6 +48,8 @@ if __name__ == "__main__":
 	.com_cnpj("92347526000160")
  	.com_itens(itens)
 	.com_total(total)
-	.com__template(2)
+	.com_template(2)
+ 	.que_notifica([ 'Setor financeiro', 'Setor 504', 'Adalberto'])
+	.com_observers([gerenciaNf])
 	).__str__() 		
 
