@@ -5,7 +5,7 @@ from abc import ABCMeta, abstractmethod
 class Nota_fiscal_Um(object):
     __metaclass__ = ABCMeta
     
-    def __init__(self, razao_social, cnpj, total, data_de_emissao, detalhes):
+    def __init__(self, razao_social, cnpj, total, data_de_emissao, detalhes, observer):
         self.__razao_social = razao_social
         self.__cnpj = cnpj
         self.__data_de_emissao = data_de_emissao
@@ -13,14 +13,14 @@ class Nota_fiscal_Um(object):
             raise NameError('Detalhes da nota não pode ter mais do que 20 caracteres')
         self.__detalhes = detalhes
         self.__total = total
-
+        
     def __str__(self):
         return f"               NOTA FISCAL 1 - 2022             \n\n"
 
 class Nota_fiscal_Dois(object):
     __metaclass__ = ABCMeta
     
-    def __init__(self, razao_social, cnpj, total, data_de_emissao, detalhes):
+    def __init__(self, razao_social, cnpj, total, data_de_emissao, detalhes, observer):
         self.__razao_social = razao_social
         self.__cnpj = cnpj
         self.__data_de_emissao = data_de_emissao
@@ -44,7 +44,6 @@ def formatDate(value):
 
 def formatCnpj(value):
     date = str(value)
-    print(date)
     return f"{date[0]}{date[1]}.{date[2]}{date[3]}{date[4]}.{date[5]}{date[6]}{date[7]}/{date[8]}{date[9]}{date[10]}-{date[11]}{date[12]}"
 
 class Criador_de_nota_fiscal(object):
@@ -53,8 +52,12 @@ class Criador_de_nota_fiscal(object):
         self.__cnpj = None
         self.__data_de_emissao = date.today()
         self.__itens = None
+        self.__observers = []
+        self.__pessoas = []
         self.__detalhes = ""
         self.__template = 1
+        for obs in self.__observers:
+            obs(self)
             
     def com_razao_social(self,razao_social):
         self.__razao_social = razao_social
@@ -80,14 +83,24 @@ class Criador_de_nota_fiscal(object):
         self.__total = total
         return self
     
-    def com__template(self, template):
+    def com_template(self, template):
         self.__template = template
+        return self
+    
+    def que_notifica(self, pessoas):
+        self.__pessoas = pessoas
+        return self
+    
+    def com_observers(self, observers):
+        self.__observers = observers
+        for obs in self.__observers:
+            obs(self.__razao_social, self.__cnpj, self.__pessoas)
         return self
     
     def checaTemplateNf(self):
         if self.__template == 1:
-            return Nota_fiscal_Um(self.__razao_social,self.__cnpj, self.__total,self.__data_de_emissao, self.__detalhes).__str__()
-        return Nota_fiscal_Dois(self.__razao_social,self.__cnpj, self.__total,self.__data_de_emissao, self.__detalhes).__str__()
+            return Nota_fiscal_Um(self.__razao_social,self.__cnpj, self.__total,self.__data_de_emissao, self.__detalhes,self.__observers).__str__()
+        return Nota_fiscal_Dois(self.__razao_social,self.__cnpj, self.__total,self.__data_de_emissao, self.__detalhes,self.__observers).__str__()
     
     def __str__(self):
         print(f"======================================================\n"+
